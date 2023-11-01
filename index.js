@@ -5,8 +5,10 @@ const port = 8000;
 
 const app = express();
 
+app.use(express.urlencoded({extends: true}))
+
 app.set('view engine', 'ejs');
-app.set('views', 'src/views');
+app.set('views', './src/views');
 
 app.use('/', router);
 

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const csvuploadSchema = new mongoose.Schema({
-    name: String
+    fileName: String,
+    fileData: []
 });
 
 const CSVUpload = mongoose.model('CSVUpload', csvuploadSchema);
