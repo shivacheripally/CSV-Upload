@@ -1,5 +1,6 @@
 const express = require('express');
 const router = require('./src/routes/upload_route');
+const db = require('./src/config/mongoose');
 const port = 8000;
 
 const app = express();
