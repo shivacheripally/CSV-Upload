@@ -1,54 +1,79 @@
+const CSVUpload = require('../models/upload_model');
 const fs = require('fs');
 const csv = require('csv-parser');
-const multer  = require('multer')
 
+const getDBData = async () => {
+  try {
+    const dbData = await CSVUpload.find({});
+
+    return dbData;
+  } catch (error) {
+    console.error('Error while querying the database:', error);
+    throw error; // Handle the error or return an appropriate response
+  }
+};
 class uploadController {
 
-  static home = function (req, res) {
+  static home = async function (req, res) {
+    const dbData = await getDBData();
+
     res.render('home', {
-      title: "Home | Page"
+      title: "Home | Page",
+      dbData
     })
   }
 
-  static uploadFile = function(req, res){
-    
-  }
-
-  static accessFile(req, res) {
-    console.log('csvFilePath', req.body);
-
+  static uploadFile = function (req, res) {
     try {
-      const results = []; // This array will store the objects from the CSV data.
-
-      // Specify the path to your CSV file. You can get it from the request or define it as needed.
-      const csvFilePath = req.body.csvname;
+      const results = [];
+  
+      // Get the path to the uploaded CSV file
+      const csvFilePath = req.file.path;
+  
       fs.createReadStream(csvFilePath)
         .pipe(csv())
         .on('data', (row) => {
-          // For each row in the CSV, create an object and push it to the results array.
           results.push(row);
         })
-        .on('end', () => {
-          // All data has been read and processed.
-          console.log('CSV data unpacked:');
-          console.log(results);
+        .on('end', async () => {
+    
+          // res.status(200).json({ data: results });
+          
+          CSVUpload.create(
+            {
+              fileName: req.file.originalname,
+              fileData: results
+            }
+          )
+            
+          const dbData = await getDBData();
 
-          // You can do further processing with the 'results' array here.
-
-          // Send the response to the client if needed.
-          res.status(200).json({ data: results });
+          return res.redirect('back');
         })
         .on('error', (error) => {
           console.error('Error while processing the CSV file:', error);
-          // Handle the error and send an appropriate response to the client.
           res.status(500).json({ error: 'Failed to process the CSV file' });
         });
-    }
-
-    catch (err) {
+    } catch (err) {
       console.log(`Error while reading csv file: ${err}`);
-      return;
+      return res.status(500).json({ error: 'Failed to process the CSV file' });
     }
+  };
+
+  static showData = async function(req, res){
+    const id = req.query.id;
+    const fileData = await CSVUpload.findById(id);
+    
+    return res.render('showData', {
+      title: 'Your | Data',
+      fileData: fileData.fileData
+    })
+  } 
+
+  static deleteFile = async function (req, res) {
+    const id = req.query.id;
+    await CSVUpload.findByIdAndDelete(id);
+    console.log('Successfully Deleted');
 
     return res.redirect('/');
   }
