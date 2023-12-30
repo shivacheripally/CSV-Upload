@@ -9,9 +9,9 @@
     <body>
         <h1>Rendered using EJS</h1>
 
-        <form action="/getFile" method="post">
-            <input type="file" placeholder="choose file" name="csvname" required accept=".csv" />
-            <button class="btn btn-primary"> upload</button>
+        <form action="/getFile" method="post" enctype="multipart/form-data">
+            <input type="file" placeholder="choose file" name="csvname" required accept=".csv"/>
+            <button class="btn btn-primary">upload</button>
         </form>
 
 
