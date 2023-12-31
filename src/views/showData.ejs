@@ -8,14 +8,21 @@
 <body>
     <h1>Your Uploaded File Data</h1>
 
-    <ul>
-        <% for(const data of fileData){ %>
-            <li>
-                <%= data %>
-            </li>
+    <table border="2">
+        <tr>
+            <% for(const head of headers) { %>
+                <th><%= head %></th>
+            <%}%>
+        </tr>
+        <% for(const data of fileData) { %>
+            <tr>
+                <% for(const value of data) { %>
+                    <td><%= value %></td>
+                <%}%>
+            </tr>
         <%}%>
-    </ul>
+    </table>
 
-    <!-- <button><a href="/home"></a>Home</button> -->
+    <button><a href="/">Home</a></button>
 </body>
 </html>

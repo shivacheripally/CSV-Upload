@@ -7,8 +7,6 @@ const uploadController = require('../controllers/upload_controller');
 
 router.get('/', uploadController.home);
 
-router.get('/home', uploadController.home);
-
 router.post('/uploadFile',upload.single('uploaded_file'), uploadController.uploadFile);
 
 router.get('/showData', uploadController.showData);
